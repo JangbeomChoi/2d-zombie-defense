@@ -68,6 +68,7 @@ public class AlliedUnitMove : MonoBehaviour
     {
         // 적군을 공격하는 코드를 추가합니다.
         // 예: 적군에게 데미지를 입히는 등의 작업을 수행합니다.
+        
     }
 
     private void MoveToCastle()
