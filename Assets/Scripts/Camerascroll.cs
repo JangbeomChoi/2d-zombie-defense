@@ -3,33 +3,39 @@ using UnityEngine;
 
 public class Camerascroll : MonoBehaviour
 {
-    public float scrollSpeed = 2.0f; // 스크롤 속도 조절 변수
+    public float moveSpeed = 5.0f;
+    public float minX;
+    public float maxX;
 
     void Update()
     {
         
         if (Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.A))
         {
-            ScrollLeft();
+            MoveCameraLeft();
         }
         
         else if (Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.D))
         {
-            ScrollRight();
+            MoveCameraRight();
         }
     }
 
     
-    public void ScrollLeft()
+    public void MoveCameraLeft()
     {
-        Vector3 newPosition = transform.position - Vector3.right * scrollSpeed * Time.deltaTime;
+        Vector3 newPosition = transform.position - Vector3.right * moveSpeed * Time.deltaTime;
+        
+        newPosition.x = Mathf.Max(newPosition.x, minX);
         transform.position = newPosition;
     }
 
-   
-    public void ScrollRight()
+    
+    public void MoveCameraRight()
     {
-        Vector3 newPosition = transform.position + Vector3.right * scrollSpeed * Time.deltaTime;
+        Vector3 newPosition = transform.position + Vector3.right * moveSpeed * Time.deltaTime;
+        
+        newPosition.x = Mathf.Min(newPosition.x, maxX);
         transform.position = newPosition;
     }
 }
