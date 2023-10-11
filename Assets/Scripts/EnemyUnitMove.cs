@@ -1,37 +1,42 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class EnemyUnitMove : MonoBehaviour
 {
-    public float moveSpeed = 3f;
-    public float attackRange = 2f;
+    public float moveSpeed = 5f;   
+    public float attackRange = 2f; 
+    public float attackDamage = 10f;
 
-    private Transform targetCastle;
-    private GameObject targetEnemy;
+    public float maxHealth = 50f;
+    private float currentHealth;
+
+    private Transform targetCastle; 
+    private GameObject targetEnemy; 
 
     private void Start()
     {
-        // 공격 대상 적의 성을 설정합니다. (예: 게임 시작 시 설정)
+        
         targetCastle = GameObject.FindWithTag("AlliedCastle").transform;
     }
 
     private void Update()
     {
-
+        
         GameObject nearestEnemy = FindNearestEnemy();
 
         if (nearestEnemy != null)
         {
-
+            
             Vector3 enemyPosition = nearestEnemy.transform.position;
             Vector3 moveDirection = (enemyPosition - transform.position).normalized;
             transform.Translate(moveDirection * moveSpeed * Time.deltaTime);
 
-
+            
             float distanceToEnemy = Vector3.Distance(transform.position, enemyPosition);
 
-
+            
             if (distanceToEnemy <= attackRange)
             {
                 Attack(nearestEnemy);
@@ -39,14 +44,14 @@ public class EnemyUnitMove : MonoBehaviour
         }
         else
         {
-
+            
             MoveToCastle();
         }
     }
 
     private GameObject FindNearestEnemy()
     {
-        GameObject[] enemies = GameObject.FindGameObjectsWithTag("Ally");
+        GameObject[] enemies = GameObject.FindGameObjectsWithTag("Ally"); 
         GameObject nearestEnemy = null;
         float nearestDistance = float.MaxValue;
 
@@ -54,7 +59,7 @@ public class EnemyUnitMove : MonoBehaviour
         {
             float distance = Vector3.Distance(transform.position, enemy.transform.position);
 
-
+            
             if (distance < nearestDistance)
             {
                 nearestEnemy = enemy;
@@ -65,15 +70,36 @@ public class EnemyUnitMove : MonoBehaviour
         return nearestEnemy;
     }
 
-    private void Attack(GameObject enemy)
+    private void Attack(GameObject targetEnemy)
     {
-        // 적군을 공격하는 코드를 추가합니다.
-        // 예: 적군에게 데미지를 입히는 등의 작업을 수행합니다.
+        
+       
+        EnemyUnitMove enemyUnit = targetEnemy.GetComponent<EnemyUnitMove>();
+
+        if (enemyUnit != null)
+        {
+            enemyUnit.TakeDamage(attackDamage);
+        }
+    }
+
+    public void TakeDamage(float attackDamage)
+    {
+        currentHealth -= attackDamage;
+        if(currentHealth <= 0)
+        {
+            Die();
+        }
+
+    }
+
+    private void Die()
+    {
+        Destroy(gameObject);
     }
 
     private void MoveToCastle()
     {
-
+        
         Vector3 castlePosition = targetCastle.position;
         Vector3 moveDirection = (castlePosition - transform.position).normalized;
         transform.Translate(moveDirection * moveSpeed * Time.deltaTime);
